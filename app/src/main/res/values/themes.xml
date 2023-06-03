@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Mangatek" parent="Theme.AppCompat.Light.NoActionBar" />
+
+
+    <style name="app_title">
+        <item name="android:textColor">@color/main</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:fontFamily">@font/jockeyone</item>
+    </style>
+
+    <style name="title_text">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:fontFamily">@font/jockeyone</item>
+    </style>
+
+    <!-- home_card_vertical -->
+
+    <style name="homecard_title_text">
+        <item name="android:textColor">@color/dark_grey</item>
+        <item name="android:textSize">23sp</item>
+        <item name="android:fontFamily">@font/jockeyone</item>
+    </style>
+    <style name="homecard_desc_text">
+        <item name="android:textColor">@color/dark_grey</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/jockeyone</item>
+    </style>
+
+</resources>
