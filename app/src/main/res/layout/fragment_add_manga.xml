@@ -16,7 +16,7 @@
         />
 
     <EditText
-        android:id="@+id/name_input"
+        android:id="@+id/ean_input"
         android:layout_width="200sp"
         android:layout_height="30sp"
         android:layout_gravity="center"
@@ -41,6 +41,12 @@
         style="@style/homecard_desc_text"
         android:paddingEnd="@dimen/default_margin"
         android:paddingStart="@dimen/default_margin"
-
         />
+    <TextView
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="testfe"
+        android:textColor="@color/dark_grey"/>
+
 </LinearLayout>
