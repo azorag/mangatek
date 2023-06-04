@@ -4,6 +4,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -50,9 +51,15 @@ android {
 }
 
 dependencies {
-
-    implementation("com.squareup.moshi:moshi:1.14.0")
+        //moshi pour l'instant marche pas
+    kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.13.0'
+    implementation"com.squareup.moshi:moshi:1.14.0"
     implementation 'com.beust:klaxon:5.5'
+        //retrofit en test
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.0"
+
     implementation "androidx.constraintlayout:constraintlayout:2.1.0"
     implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.11"
 	implementation 'androidx.cardview:cardview:1.0.0'

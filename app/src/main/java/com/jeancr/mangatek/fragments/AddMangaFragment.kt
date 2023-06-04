@@ -18,6 +18,7 @@ import com.beust.klaxon.Klaxon
 import com.jeancr.mangatek.MainActivity
 import com.jeancr.mangatek.MangaRepository
 import com.jeancr.mangatek.R
+import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_main.textView
@@ -28,10 +29,15 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import java.io.IOException
 import java.io.StringReader
+import com.jeancr.mangatek.model.MangaApiResponse
+import com.jeancr.mangatek.viewmodel.MainViewModel
+import java.lang.StringBuilder
 
 class AddMangaFragment(private val context:MainActivity): Fragment() {
     lateinit var textView : TextView
+    private lateinit var mainViewModel: MainViewModel
     private var uploadedImage:ImageView?= null
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,17 +52,51 @@ class AddMangaFragment(private val context:MainActivity): Fragment() {
         val buttonManga = requireView().findViewById<Button>(R.id.confirm_button)
         buttonManga.setOnClickListener(View.OnClickListener() {
 
-            addManga()
-            //startActivity(openURL)
-            //textView.text = eanInput.text.toString()
+            MainViewModel().getMangaData("9782344057186")
+
+
         })
 
+    }
+
+    private fun subscribe() {
+        mainViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            // Set the result text to Loading
+            if (isLoading) textView.text = resources.getString(R.string.homecard_title)
+        }
+
+        mainViewModel.isError.observe(viewLifecycleOwner) { isError ->
+            // Hide display image and set the result text to the error message
+            if (isError) {
+                textView.text = mainViewModel.errorMessage
+            }
+        }
+
+        mainViewModel.mangaData.observe(viewLifecycleOwner) { mangaData ->
+            // Display weather data to the UI
+            if (mangaData != null) {
+
+            }
+        }
+    }
+
+    private fun setResultText(mangaData: MangaApiResponse) {
+        val resultText = StringBuilder("Result:\n")
+
+        mangaData.product.let { product ->
+            resultText.append("title: ${product?.title}\n")
+        }
+        println("ah")
+        println(resultText)
+        println("ah")
+        textView.text = resultText
     }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        subscribe()
         val view = inflater?.inflate(R.layout.fragment_add_manga, container,false)
 
 
@@ -69,48 +109,6 @@ class AddMangaFragment(private val context:MainActivity): Fragment() {
         val mangaName=view.findViewById<EditText>(R.id.ean_input).text.toString()
     }
 
-    @JsonClass(generateAdapter = true)
-    data class Gist(var files: Map<String, GistFile>?)
-
-    @JsonClass(generateAdapter = true)
-    data class GistFile(var content: String?)
-
-    private val moshi = Moshi.Builder().build()
-    private val gistJsonAdapter = moshi.adapter(Gist::class.java)
-
-    private fun addManga() {
-        val client = OkHttpClient()
-        val request = okhttp3.Request.Builder()
-            .url("https://barcodes1.p.rapidapi.com/?query=9782344057186")
-            .get()
-            .addHeader("X-RapidAPI-Key", "9171e2550dmsh7e7eb141e726fadp10fa8ejsnf5f44e61561b")
-            .addHeader("X-RapidAPI-Host", "barcodes1.p.rapidapi.com")
-            .build()
-
-        val response = client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                response.use {
-                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
-
-                    for ((name, value) in response.headers) {
-                        println("$name: $value")
-                    }
-                    println(response.body!!.string())
-                    val test = response.body!!
-                    println(test.javaClass)
-                    val klaxon= Klaxon()
-                    //val parsed=klaxon.parseJsonObject(StringReader(response.body!!.string()))
-                    //val data=Klaxon().parseJsonObject(StringReader(response.body!!.string()))
-                }
-            }
-        })
-
-
-    }
 
     private fun test(){
         val intent =Intent()
