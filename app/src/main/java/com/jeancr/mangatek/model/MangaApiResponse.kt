@@ -8,7 +8,7 @@ data class MangaApiResponse(
 	val product: Product? = null
 )
 
-data class BarcodeFormats(
+/*data class BarcodeFormats(
 
 	@field:SerializedName("ean_8")
 	val ean8: String? = null
@@ -49,11 +49,11 @@ data class Attributes(
 	@field:SerializedName("dimensions")
 	val dimensions: String? = null
 )
-
+*/
 data class Product(
 
-	@field:SerializedName("barcode_formats")
-	val barcodeFormats: BarcodeFormats? = null,
+	//@field:SerializedName("barcode_formats")
+	//val barcodeFormats: BarcodeFormats? = null,
 
 	@field:SerializedName("features")
 	val features: List<String?>? = null,
@@ -70,14 +70,14 @@ data class Product(
 	@field:SerializedName("ingredients")
 	val ingredients: Any? = null,
 
-	@field:SerializedName("attributes")
-	val attributes: Attributes? = null,
+	//@field:SerializedName("attributes")
+	//val attributes: Attributes? = null,
 
 	@field:SerializedName("category")
 	val category: Any? = null,
 
-	@field:SerializedName("online_stores")
-	val onlineStores: List<OnlineStoresItem?>? = null,
+	//@field:SerializedName("online_stores")
+	//val onlineStores: List<OnlineStoresItem?>? = null,
 
 	@field:SerializedName("title")
 	val title: String? = null,

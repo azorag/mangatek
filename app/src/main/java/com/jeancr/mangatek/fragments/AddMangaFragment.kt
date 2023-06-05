@@ -30,17 +30,31 @@ import okhttp3.Response
 import java.io.IOException
 import java.io.StringReader
 import com.jeancr.mangatek.model.MangaApiResponse
+import com.jeancr.mangatek.networking.ApiConfig
+import com.jeancr.mangatek.networking.ApiService
+import com.jeancr.mangatek.networking.RetrofitHelper
 import com.jeancr.mangatek.viewmodel.MainViewModel
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.lang.StringBuilder
 
 class AddMangaFragment(private val context:MainActivity): Fragment() {
     lateinit var textView : TextView
-    private lateinit var mainViewModel: MainViewModel
-    private var uploadedImage:ImageView?= null
+    lateinit var mainViewModel: MainViewModel
+
+    //private var uploadedImage:ImageView?= null
 
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mainViewModel= MainViewModel()
+        textView = view.findViewById(R.id.test)
+        //subscribe()
+
+
+
 
         val eanInput = view.findViewById<EditText>(R.id.ean_input)
         val codeEAN= eanInput.text.toString()
@@ -48,18 +62,29 @@ class AddMangaFragment(private val context:MainActivity): Fragment() {
         openURL.data = Uri.parse("https://youtube.com/$codeEAN")
 
 
-        textView = view.findViewById(R.id.test)
+
         val buttonManga = requireView().findViewById<Button>(R.id.confirm_button)
         buttonManga.setOnClickListener(View.OnClickListener() {
 
-            MainViewModel().getMangaData("9782344057186")
+            //val data=MainViewModel().getMangaData("9782344057186")
+            val quotesApi = RetrofitHelper.getInstance().create(ApiService::class.java)
+            // launching a new coroutine
+            GlobalScope.launch {
+                val result = quotesApi.getManga("9171e2550dmsh7e7eb141e726fadp10fa8ejsnf5f44e61561b","9782344057186")
+                println(result.body()?.product?.title)
+
+            }
+
+
+
 
 
         })
 
     }
-
+/*
     private fun subscribe() {
+
         mainViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             // Set the result text to Loading
             if (isLoading) textView.text = resources.getString(R.string.homecard_title)
@@ -74,29 +99,32 @@ class AddMangaFragment(private val context:MainActivity): Fragment() {
 
         mainViewModel.mangaData.observe(viewLifecycleOwner) { mangaData ->
             // Display weather data to the UI
+            textView.text = ("resultText")
             if (mangaData != null) {
+                textView.text = ("resultText")
+                setResultText(mangaData)
 
             }
         }
     }
-
+*/
     private fun setResultText(mangaData: MangaApiResponse) {
         val resultText = StringBuilder("Result:\n")
 
         mangaData.product.let { product ->
             resultText.append("title: ${product?.title}\n")
+            textView.text = product?.title
         }
         println("ah")
-        println(resultText)
+        println(mangaData.product)
         println("ah")
-        textView.text = resultText
+        textView.text = (resultText)
     }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        subscribe()
         val view = inflater?.inflate(R.layout.fragment_add_manga, container,false)
 
 

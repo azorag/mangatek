@@ -11,7 +11,7 @@ import retrofit2.Call
 import retrofit2.Response
 
 class MainViewModel() :ViewModel() {
-
+/*
     private val _mangaData = MutableLiveData<MangaApiResponse?>()
     val mangaData: LiveData<MangaApiResponse?> get() = _mangaData
 
@@ -67,5 +67,5 @@ class MainViewModel() :ViewModel() {
         _isError.value = true
         _isLoading.value = false
     }
-
+*/
 }
