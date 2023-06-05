@@ -9,40 +9,28 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import com.beust.klaxon.Json
-import com.beust.klaxon.JsonReader
-import com.beust.klaxon.Klaxon
 import com.jeancr.mangatek.MainActivity
+import com.jeancr.mangatek.MangaModel
 import com.jeancr.mangatek.MangaRepository
+import com.jeancr.mangatek.MangaRepository.Singleton.downloadedUri
 import com.jeancr.mangatek.R
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.JsonClass
-import com.squareup.moshi.Moshi
-import kotlinx.android.synthetic.main.activity_main.textView
-import kotlinx.android.synthetic.main.fragment_add_manga.ean_input
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Response
-import java.io.IOException
-import java.io.StringReader
-import com.jeancr.mangatek.model.MangaApiResponse
-import com.jeancr.mangatek.networking.ApiConfig
 import com.jeancr.mangatek.networking.ApiService
 import com.jeancr.mangatek.networking.RetrofitHelper
 import com.jeancr.mangatek.viewmodel.MainViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.lang.StringBuilder
+import java.util.UUID
 
 class AddMangaFragment(private val context:MainActivity): Fragment() {
     lateinit var textView : TextView
     lateinit var mainViewModel: MainViewModel
-
+    lateinit var title :String
+    lateinit var imageUrl: Uri
+    private var file:Uri? =null
     //private var uploadedImage:ImageView?= null
 
 
@@ -51,34 +39,39 @@ class AddMangaFragment(private val context:MainActivity): Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mainViewModel= MainViewModel()
         textView = view.findViewById(R.id.test)
-        //subscribe()
 
 
 
-
-        val eanInput = view.findViewById<EditText>(R.id.ean_input)
-        val codeEAN= eanInput.text.toString()
-        val openURL = Intent(android.content.Intent.ACTION_VIEW)
-        openURL.data = Uri.parse("https://youtube.com/$codeEAN")
 
 
 
         val buttonManga = requireView().findViewById<Button>(R.id.confirm_button)
         buttonManga.setOnClickListener(View.OnClickListener() {
-
+            val eanInput = view.findViewById<EditText>(R.id.ean_input)
+            val codeEAN= eanInput.text.toString()
             //val data=MainViewModel().getMangaData("9782344057186")
             val quotesApi = RetrofitHelper.getInstance().create(ApiService::class.java)
             // launching a new coroutine
             GlobalScope.launch {
-                val result = quotesApi.getManga("9171e2550dmsh7e7eb141e726fadp10fa8ejsnf5f44e61561b","9782344057186")
-                println(result.body()?.product?.title)
+                val result = quotesApi.getManga("9171e2550dmsh7e7eb141e726fadp10fa8ejsnf5f44e61561b",codeEAN)
+                //récupération des données du mangas
+                title= result.body()?.product?.title.toString()
+                imageUrl= result.body()?.product?.images?.get(0)?.toUri()!!
 
-            }
+                val repo =MangaRepository()
+                //repo.uploadImage(file!!){
+                val downloadImageUrl=imageUrl
 
-
-
-
-
+                //creer l'objet pour envoyer en bdd
+                val manga= MangaModel(
+                    UUID.randomUUID().toString(),
+                    downloadImageUrl.toString(),
+                    title
+                )
+                repo.insertManga(manga)
+                // }
+        }
+0
         })
 
     }
@@ -107,7 +100,7 @@ class AddMangaFragment(private val context:MainActivity): Fragment() {
             }
         }
     }
-*/
+
     private fun setResultText(mangaData: MangaApiResponse) {
         val resultText = StringBuilder("Result:\n")
 
@@ -120,21 +113,37 @@ class AddMangaFragment(private val context:MainActivity): Fragment() {
         println("ah")
         textView.text = (resultText)
     }
+*/
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater?.inflate(R.layout.fragment_add_manga, container,false)
+    title="oui"
+
+    val view = inflater?.inflate(R.layout.fragment_add_manga, container,false)
 
 
         val confirmButton =view?.findViewById<Button>(R.id.confirm_button)
-        confirmButton?.setOnClickListener {sendForm(view)}
+       //confirmButton?.setOnClickListener {sendForm(title)}
         return view
     }
 
-    private fun sendForm(view: View) {
-        val mangaName=view.findViewById<EditText>(R.id.ean_input).text.toString()
+    private fun sendForm(titre:String) {
+        val repo =MangaRepository()
+        //repo.uploadImage(file!!){
+            val downloadImageUrl=downloadedUri
+
+            //creer l'objet pour envoyer en bdd
+            val manga= MangaModel(
+                UUID.randomUUID().toString(),
+                downloadImageUrl.toString(),
+                titre
+            )
+            repo.insertManga(manga)
+       // }
+
+
     }
 
 
@@ -149,12 +158,10 @@ class AddMangaFragment(private val context:MainActivity): Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode==47&& resultCode == Activity.RESULT_OK){
             if(data == null|| data.data==null)return
-            val selectedImage = data.data
+
+            val selectedImage = imageUrl
 
 
-
-            val repo = MangaRepository()
-            repo.uploadImage(selectedImage!!)
 
         }
     }

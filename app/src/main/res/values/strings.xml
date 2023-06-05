@@ -5,8 +5,8 @@
     <string name="home_title">Derniers mangas sortis</string>
     <string name="home_last_section">Poursuivez votre collection</string>
     <string name="homecard_title">Titre du manga</string>
-    <string name="homecard_desc">À paraitre : tome\nVotre collection : 50/104
-
-    </string>
+    <string name="homecard_desc">À paraitre : tome\nVotre collection : 50/104</string>
+    <string name="collection_title">Vos mangas</string>
+    <string name="add_manga">Ajouter un manga</string>
 
 </resources>

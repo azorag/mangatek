@@ -10,6 +10,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.jeancr.mangatek.MangaRepository.Singleton.databaseRef
+import com.jeancr.mangatek.MangaRepository.Singleton.downloadedUri
 import com.jeancr.mangatek.MangaRepository.Singleton.mangaList
 import com.jeancr.mangatek.MangaRepository.Singleton.storageReference
 import java.util.UUID
@@ -26,9 +27,11 @@ class MangaRepository {
         val databaseRef = FirebaseDatabase.getInstance("https://mangatek-f27da-default-rtdb.europe-west1.firebasedatabase.app/").getReference("mangas")
         //création de la liste
         val mangaList = arrayListOf<MangaModel>()
+        //image
+        var downloadedUri:Uri? =null
     }
 
-    fun uploadImage(file:Uri){
+    fun uploadImage(file:Uri,callback: () -> Unit){
         if (file!=null){
             val fileName =UUID.randomUUID().toString()+ ".jpg"
             val ref= storageReference.child(fileName)
@@ -41,7 +44,8 @@ class MangaRepository {
                 return@Continuation ref.downloadUrl
             }).addOnCompleteListener { task ->
                 if (task.isSuccessful){
-                    val downloadUri =task.result
+                    downloadedUri =task.result
+                    callback()
                 }
             }
         }
@@ -67,7 +71,9 @@ class MangaRepository {
 
             })
     }
+    fun updateManga(manga:MangaModel)= databaseRef.child(manga.id).setValue(manga)
 
+    fun insertManga(manga:MangaModel)= databaseRef.child(manga.id).setValue(manga)
 
 
 }
