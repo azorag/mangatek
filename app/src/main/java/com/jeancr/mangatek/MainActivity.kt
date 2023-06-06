@@ -18,6 +18,7 @@ import okhttp3.Response
 import java.io.IOException
 
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.jeancr.mangatek.fragments.MangaSingleCollection
 
 
 class MainActivity : AppCompatActivity() {
@@ -43,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         addManga.setOnClickListener(View.OnClickListener() {
             loadFragment(AddMangaFragment(this),R.string.add_manga)
         })
+
 
     }
     private fun loadFragment(fragment: Fragment, string:Int){

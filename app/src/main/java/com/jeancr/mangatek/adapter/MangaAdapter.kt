@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.helper.widget.Carousel
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.jeancr.mangatek.MainActivity
@@ -14,10 +15,12 @@ import com.jeancr.mangatek.R
 import org.w3c.dom.Text
 
 class MangaAdapter(private val context: MainActivity, private val mangaList :List<MangaModel>, private val  layoutId: Int) : RecyclerView.Adapter<MangaAdapter.ViewHolder>(){
-
+    //class mangaViewHolder(val binding:Carousel):RecyclerView.ViewHolder(binding.rootView)
     class ViewHolder(view:View) : RecyclerView.ViewHolder(view){
         val mangaImage = view.findViewById<ImageView>(R.id.image_item)
         val mangaName:TextView? = view.findViewById<TextView>(R.id.name_item)
+        val mangainfos:TextView? = view.findViewById<TextView>(R.id.info_item)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -25,11 +28,14 @@ class MangaAdapter(private val context: MainActivity, private val mangaList :Lis
         return ViewHolder(view)
     }
 
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         val currentManga =mangaList[position]
         Glide.with(context).load(Uri.parse(currentManga.imageUrl)).into(holder.mangaImage)
 
         holder.mangaName?.text= currentManga.name
+        holder.mangainfos?.text= currentManga.infos
 
 
     }

@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.jeancr.mangatek.MainActivity
-import com.jeancr.mangatek.MangaModel
+import com.jeancr.mangatek.MangaRepository
 import com.jeancr.mangatek.MangaRepository.Singleton.mangaList
 import com.jeancr.mangatek.R
 import com.jeancr.mangatek.adapter.MangaAdapter
@@ -26,5 +28,25 @@ class HomeFragment(private val context:MainActivity) : Fragment(){
         verticalRecyclerView?.addItemDecoration(MangaItemDecoration())
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireView().findViewById<ImageView>(R.id.image_item)
+            ?.setOnClickListener(View.OnClickListener() {
+                loadFragment(MangaSingleCollection(context), R.string.add_manga)
+            })
+    }
+    private fun loadFragment(fragment: Fragment, string:Int){
+        val repo = MangaRepository()
+
+        requireView().findViewById<TextView>(R.id.page_title).text=resources.getString(string)
+
+        repo.updateData {
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container,fragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
     }
 }
